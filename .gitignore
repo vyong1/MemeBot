@@ -1,0 +1,3 @@
+**/*.json
+files/token.txt
+__pycache__/
