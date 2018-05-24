@@ -1,6 +1,7 @@
 import MemeRequest
 import subprocess
 import json
+import datetime
 # https://codebeautify.org/jsonviewer
 
 def install():
@@ -10,9 +11,8 @@ def install():
 def clean():
     pass
 
-# https://imgur.com/k6n4FVS
-# https://i.imgur.com/k6n4FVS.jpg
-url = 'https://imgur.com/k6n4FVS'
+
 if "imgur" in url:
+    id = 
+    url = 'https://api.imgur.com/3/image/' + id
     url = url[0:8] + 'i.' + url[8:] + '.jpg'
-print(url)

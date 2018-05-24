@@ -16,18 +16,31 @@ async def on_message(message):
         # Get a meme from Reddit
         mc = MemeRequest.MemeRequest()
         post = mc.giveMeme()
+        # vyong note: Post contains a field for 'nsfw', but is currently not used
+
         # Request the image and write it as a png
         url = post['url']
-        # Special case for imgur links
-        if "imgur" in url:
-            url = url[0:8] + 'i.' + url[8:] + '.jpg'
-        # vyong note: Post contains a field for 'nsfw', but is currently not used
-        response = requests.get(post['url'], stream=True)
-        with open('files/memepic.png', 'wb') as out_file:
-            shutil.copyfileobj(response.raw, out_file)
-        del response
-        await client.send_message(message.channel, post['title'])
-        await client.send_file(message.channel, 'files/memepic.png')
+        while ('www.' in url):
+            # Special case for reddit non-image posts - get another meme
+            post = mc.giveMeme()
+            url = post['url']
+
+        # Special case for non-reddit links
+        if not("i.redd.it" in url):
+            await client.send_message(message.channel, post['title'])
+            await client.send_message(message.channel, url)
+        else:
+            # Request the image
+            response = requests.get(post['url'], stream=True)
+
+            # Write the image data into files/memepic.png
+            with open('files/memepic.png', 'wb') as out_file:
+                shutil.copyfileobj(response.raw, out_file)
+            del response
+
+            # Send messages
+            await client.send_message(message.channel, post['title'])
+            await client.send_file(message.channel, 'files/memepic.png')
     else:
         pass
 
