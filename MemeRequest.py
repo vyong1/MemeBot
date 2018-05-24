@@ -5,7 +5,21 @@ import shutil
 import requests
 import random
 
-# vyong note: this is pretty sloppily written without much planning
+'''
+    Black box diagram of this class
+
+                  _______________
+                 |               |
+    giveMeme() --|   MemeRequest |-- post
+                 |_______________|
+
+    Where post = {
+        "title" : someTitle, 
+        "url" : someUrl, 
+        "nsfw" : True/False
+        }
+'''
+
 
 class MemeRequest:
     '''
