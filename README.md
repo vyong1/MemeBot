@@ -1,5 +1,5 @@
 # **MemeBot**
-Discord bot written in ```discord.py```
+Discord bot written in ```discord.py```. Posts random memes from Reddit.
 
 # **Setup:**
 ##### **Requirements:**
