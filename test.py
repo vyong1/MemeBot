@@ -11,8 +11,4 @@ def install():
 def clean():
     pass
 
-
-if "imgur" in url:
-    id = 
-    url = 'https://api.imgur.com/3/image/' + id
-    url = url[0:8] + 'i.' + url[8:] + '.jpg'
+print(datetime.datetime.now())
