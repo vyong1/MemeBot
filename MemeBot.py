@@ -54,15 +54,12 @@ async def run_command(message):
         await play_sound_file('files/sounds/MyAncestors.mp3')
     elif(message.content == "!balance"):
         await play_sound_file('files/sounds/BalanceInAllThings.mp3')
-    elif(message.content == "!takeonme"):
-        await play_sound_file('files/sounds/TakeOnMe.mp3')
     else:
         await client.send_message(message.channel, "Sorry, I don't recognize that command")
 
-async def play_sound_file(file):
+async def play_sound_file(file, channel):
     ''''Plays a sound file for the user'''
     # Join the channel
-    channel = client.get_channel('416087631043100673')
     voice = await client.join_voice_channel(channel)
 
     # Play the sound file
