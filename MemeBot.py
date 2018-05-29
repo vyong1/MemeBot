@@ -8,7 +8,7 @@ client = discord.Client()
 
 @client.event
 async def on_message(message):
-    # Handler for a message
+    '''Handler for a message'''
     if message.content.startswith('!'):# Command issued
         await run_command(message)
 
@@ -45,14 +45,34 @@ async def on_message(message):
         pass
 
 async def run_command(message):
-    # Runs a command
+    '''Runs a command'''
     if(message.content == "!logout"):
         await client.logout()
         print("Bot successfully logged out")
+    elif(message.content == "!ancestors"):
+        await play_sound_file('files/MyAncestors.mp3')
+    elif(message.content == "!balance"):
+        await play_sound_file('files/BalanceInAllThings.mp3')
     else:
         await client.send_message(message.channel, "Sorry, I don't recognize that command")
-    
 
+async def play_sound_file(file):
+    ''''Plays a sound file for the user'''
+    # Join the channel
+    channel = client.get_channel('416087631043100673')
+    voice = await client.join_voice_channel(channel)
+
+    # Play the sound file
+    player = voice.create_ffmpeg_player(file)
+    player.volume = 0.5
+    player.start()
+
+    # Wait until the sound clip is finished before leaving
+    while(not player.is_done()):
+        pass
+    await voice.disconnect()
+
+voice = None
 # Start the bot
 print("Bot Started")
 
