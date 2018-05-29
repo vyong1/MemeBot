@@ -3,6 +3,7 @@ import asyncio
 import MemeRequest
 import requests
 import shutil
+import time
 
 client = discord.Client()
 
@@ -50,9 +51,11 @@ async def run_command(message):
         await client.logout()
         print("Bot successfully logged out")
     elif(message.content == "!ancestors"):
-        await play_sound_file('files/MyAncestors.mp3')
+        await play_sound_file('files/sounds/MyAncestors.mp3')
     elif(message.content == "!balance"):
-        await play_sound_file('files/BalanceInAllThings.mp3')
+        await play_sound_file('files/sounds/BalanceInAllThings.mp3')
+    elif(message.content == "!takeonme"):
+        await play_sound_file('files/sounds/TakeOnMe.mp3')
     else:
         await client.send_message(message.channel, "Sorry, I don't recognize that command")
 
@@ -72,7 +75,6 @@ async def play_sound_file(file):
         pass
     await voice.disconnect()
 
-voice = None
 # Start the bot
 print("Bot Started")
 
