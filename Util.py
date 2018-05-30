@@ -1,5 +1,6 @@
 import MemeRequest
 import json
+import subprocess
 
 def callCURLScripts():
     '''Uses a cURL script to send a GET request to the reddit api'''

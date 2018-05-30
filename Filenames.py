@@ -2,7 +2,7 @@
 # files/
 Token = 'files/token.txt'
 # files/cache/
-SubredditCacheDirectory = 'files/cache/subreddit_request/'
+SubredditCacheDirectory = 'files/cache/subreddit_requests/'
 MemeDict = 'files/cache/MemeDict.json'
 # files/temp/
 MemePicture = 'files/temp/memepic.png'
