@@ -1,6 +1,6 @@
 **/*.json
 files/token.txt
 __pycache__/
-files/prev_req_time.txt
-files/memepic.png
+files/timing/prev_req_time.txt
+files/temp/memepic.png
 test.py
