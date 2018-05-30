@@ -4,6 +4,7 @@ import datetime
 import shutil
 import requests
 import random
+import RateLimiter
 
 '''
     Black box diagram of this class
@@ -39,8 +40,9 @@ class MemeRequest:
 
     def __init__(self):
         self.time_of_creation = datetime.datetime.now()
+        self.rateLimiter = RateLimiter.RateLimiter(MemeRequest.RATE_LIMIT)
 
-    def __getTimeSinceLastRequest(self):
+    def __getPreviousRequestTime(self):
         '''Returns the time in seconds since the last request 
         was made to the Reddit API'''
         # Get the time of the previous request
@@ -49,10 +51,7 @@ class MemeRequest:
         f.close()
         # Parse the string into a datetime
         prev_datetime = datetime.datetime.strptime(time_str, '%Y-%m-%d %H:%M:%S.%f')
-        # Calculate the delta time
-        delta = self.time_of_creation - prev_datetime
-        time_elapsed = delta.total_seconds()
-        return time_elapsed
+        return prev_datetime
 
     def __parseMemes(self):
         '''Parses the json response'''
@@ -95,16 +94,20 @@ class MemeRequest:
         f.close()
     
     def __request(self):
-        '''Request memes (if allowed to)'''
+        '''Request memes (if the rate limiter allows)'''
+        # Calculate the delta time
+        prev_datetime = self.__getPreviousRequestTime()
+        delta_seconds = (self.time_of_creation - prev_datetime).total_seconds()
         # Limit the rate
-        canRequest = bool(self.__getTimeSinceLastRequest() > MemeRequest.RATE_LIMIT)
+        canRequest = self.rateLimiter.canAct(delta_seconds)
         # If request available, then send it
         if(canRequest):
             print("Request sent")
             self.__requestPosts()
             self.__parseMemes()
             self.__updatePrevReqTime()
-            
+        # True => A request has been sent
+        # False => A request has not been sent
         return canRequest
 
     def giveMeme(self):
