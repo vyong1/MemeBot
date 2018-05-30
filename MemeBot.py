@@ -1,6 +1,7 @@
 import discord
 import asyncio
 import MemeRequest
+import Filenames
 import requests
 import shutil
 import time
@@ -35,13 +36,13 @@ async def on_message(message):
             response = requests.get(post['url'], stream=True)
 
             # Write the image data into files/memepic.png
-            with open('files/memepic.png', 'wb') as out_file:
+            with open(Filenames.MemePicture, 'wb') as out_file:
                 shutil.copyfileobj(response.raw, out_file)
             del response
 
             # Send messages
             await client.send_message(message.channel, post['title'])
-            await client.send_file(message.channel, 'files/memepic.png')
+            await client.send_file(message.channel, Filenames.MemePicture)
     else:
         pass
 
@@ -96,7 +97,7 @@ async def play_sound_file(file, channel, volume=0.5):
 # Start the bot
 print("Bot Started")
 
-f = open('files/token.txt', 'r')
+f = open(Filenames.Token, 'r')
 token = f.read()
 f.close()
 

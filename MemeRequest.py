@@ -45,13 +45,13 @@ class MemeRequest:
     def __init__(self):
         self.time_of_creation = datetime.datetime.now()
         self.rateLimiter = RateLimiter.RateLimiter(MemeRequest.RATE_LIMIT)
-        self.prevReqTime = PreviousRequestTime.PreviousRequestTime("files/prev_req_time.txt")
+        self.prevReqTime = PreviousRequestTime.PreviousRequestTime(Filenames.PreviousRequestTime)
 
     def __parseMemes(self):
         '''Parses the json response'''
         memeDict = {}
         for subreddit in MemeRequest.subreddits:
-            filename = Filenames.SubredditCache + subreddit + '.json'
+            filename = Filenames.SubredditCacheDirectory + subreddit + '.json'
             data = Util.loadJsonFile(filename)
             memes = {}
             # Parse the json response
@@ -67,7 +67,7 @@ class MemeRequest:
             memeDict[subreddit] = memes
         jsonString = json.dumps(memeDict)
 
-        f = open('files/MemeDict.json', 'w')
+        f = open(Filenames.MemeDict, 'w')
         f.write(jsonString)
         f.close()
     
@@ -91,7 +91,7 @@ class MemeRequest:
     def giveMeme(self):
         # Request the latest (dankest) memes
         self.__request()
-        memeDict = Util.loadJsonFile('files/MemeDict.json')
+        memeDict = Util.loadJsonFile(Filenames.MemeDict)
 
         # Pick a random sub and a random post from that sub
         sub = MemeRequest.subreddits[random.randint(0, len(MemeRequest.subreddits) - 1)]
