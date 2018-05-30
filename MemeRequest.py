@@ -5,6 +5,7 @@ import shutil
 import requests
 import random
 import RateLimiter
+import PreviousRequestTime
 
 '''
     Black box diagram of this class
@@ -25,7 +26,8 @@ import RateLimiter
 class MemeRequest:
     '''
     Requests memes from various subreddits, but limits the
-    rate of requests to 1 every 30 min
+    rate of requests to 1 every 30 min.
+    This class is instantiated per request.
     '''
 
     subreddits = [
@@ -41,17 +43,7 @@ class MemeRequest:
     def __init__(self):
         self.time_of_creation = datetime.datetime.now()
         self.rateLimiter = RateLimiter.RateLimiter(MemeRequest.RATE_LIMIT)
-
-    def __getPreviousRequestTime(self):
-        '''Returns the time in seconds since the last request 
-        was made to the Reddit API'''
-        # Get the time of the previous request
-        f = open('files/prev_req_time.txt', 'r')
-        time_str = f.read()
-        f.close()
-        # Parse the string into a datetime
-        prev_datetime = datetime.datetime.strptime(time_str, '%Y-%m-%d %H:%M:%S.%f')
-        return prev_datetime
+        self.prevReqTime = PreviousRequestTime.PreviousRequestTime("files/prev_req_time.txt")
 
     def __parseMemes(self):
         '''Parses the json response'''
@@ -81,22 +73,15 @@ class MemeRequest:
         f.write(jsonString)
         f.close()
                 
-        
     def __requestPosts(self):
         '''Uses a cURL script to send a GET request to the reddit api'''
         for subreddit in MemeRequest.subreddits:
             subprocess.call('bash request_reddit.sh ' + subreddit, shell=True)
-
-    def __updatePrevReqTime(self):
-        '''Update prev_req_time.txt with this object's time of creation'''
-        f = open('files/prev_req_time.txt', 'w')
-        f.write(str(self.time_of_creation))
-        f.close()
     
     def __request(self):
         '''Request memes (if the rate limiter allows)'''
         # Calculate the delta time
-        prev_datetime = self.__getPreviousRequestTime()
+        prev_datetime = self.prevReqTime.get()
         delta_seconds = (self.time_of_creation - prev_datetime).total_seconds()
         # Limit the rate
         canRequest = self.rateLimiter.canAct(delta_seconds)
@@ -105,7 +90,7 @@ class MemeRequest:
             print("Request sent")
             self.__requestPosts()
             self.__parseMemes()
-            self.__updatePrevReqTime()
+            self.prevReqTime(self.time_of_creation)
         # True => A request has been sent
         # False => A request has not been sent
         return canRequest
