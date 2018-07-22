@@ -2,6 +2,8 @@ import discord
 import asyncio
 import MemeRequest
 import Filenames
+import Commands
+import SoundFile
 import requests
 import shutil
 import time
@@ -47,58 +49,33 @@ async def on_message(message):
         pass
 
 async def run_command(message):
-    '''Runs a command'''
-    if(message.content == "!logout"):
-        await client.logout()
-        print("Bot successfully logged out")
-    elif(message.content == "!ancestors"):
-        await play_sound_file('files/sounds/MyAncestors.mp3', message.author.voice_channel)
-    elif(message.content == "!balance"):
-        await play_sound_file('files/sounds/BalanceInAllThings.mp3', message.author.voice_channel)
-    elif(message.content == "!toby"):
-        await play_sound_file('files/sounds/NoGodNo.mp3', message.author.voice_channel, volume=0.4)
-    elif(message.content == "!middle"):
-        await play_sound_file('files/sounds/middle.mp3', message.author.voice_channel, volume=0.5)
-    elif(message.content == "!killmyself"):
-        await play_sound_file('files/sounds/ImGoingToKillMyself.mp3', message.author.voice_channel, volume=0.5)
-    elif(message.content == "!jojoroll"):
-        await play_sound_file('files/sounds/roll.mp3', message.author.voice_channel, volume=0.5)
-    elif(message.content == "!nani"):
-        await play_sound_file('files/sounds/nani.mp3', message.author.voice_channel, volume=0.2)
-    elif(message.content == "!thicc"):
-        await play_sound_file('files/sounds/thicc.mp3', message.author.voice_channel, volume=0.5)
+    '''
+    Run a command.
+    Commands are messages that start with '!'
+    '''
+    # Sound commands
+    if message.content in Commands.sound_commands_dict:
+        soundfile = Commands.sound_commands_dict[message.content]
+        await soundfile.play(client, message.author.voice_channel)
+    # Other commands
     else:
-        await client.send_message(message.channel, "Sorry, I don't recognize that command")
-    
-    sound_cmds = {
-        "!ancestors" : "MyAncestors.mp3",
-        "!balance" : "BalanceInAllThings.mp3",
-        "!toby" : "NoGodNo.mp3",
-        "!middle" : "middle.mp3",
-        "!killmyself" : "ImGoingToKillMyself.mp3",
-        "!roll" : "roll.mp3"
-    }
+        if(message.content == "!logout"): # Log out the bot
+            await client.logout()
+            print("Bot successfully logged out")
+        elif(message.content == "!ExecuteOrder66"): # Messages @phteven 20 times
+            u = await client.get_user_info("118176521671278595")
+            for i in range(0, 20):
+                await client.send_message(message.channel, u.mention)
+                time.sleep(0.1)
+        else:
+            await client.send_message(message.channel, "Sorry, I don't recognize that command")
 
-async def play_sound_file(file, channel, volume=0.5):
-    ''''Plays a sound file for the user'''
-    # Join the channel
-    voice = await client.join_voice_channel(channel)
-
-    # Play the sound file
-    player = voice.create_ffmpeg_player(file)
-    player.volume = volume
-    player.start()
-
-    # Wait until the sound clip is finished before leaving
-    while(not player.is_done()):
-        pass
-    await voice.disconnect()
-
-# Start the bot
 print("Bot Started")
 
+# Read the token
 f = open(Filenames.Token, 'r')
 token = f.read()
 f.close()
 
+# Start the bot
 client.run(token)

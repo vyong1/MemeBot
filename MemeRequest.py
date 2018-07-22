@@ -89,7 +89,7 @@ class MemeRequest:
         return canRequest
 
     def giveMeme(self):
-        # Request the latest (dankest) memes
+        '''Request the latest (dankest) memes'''
         self.__request()
         memeDict = Util.loadJsonFile(Filenames.MemeDict)
 
