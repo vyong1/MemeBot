@@ -7,6 +7,7 @@ import SoundFile
 import requests
 import shutil
 import time
+import ExtraThicc
 
 client = discord.Client()
 
@@ -67,6 +68,14 @@ async def run_command(message):
             for i in range(0, 20):
                 await client.send_message(message.channel, u.mention)
                 time.sleep(0.1)
+        elif(message.content.startswith("!thiccify")):
+            myThiccString = ExtraThicc.thiccify(message.content.replace("!thiccify", ""))
+            await client.send_message(message.channel, myThiccString)
+        elif(message.content == "!commands"):
+            cmds = ''
+            for key, value in Commands.sound_commands_dict.items():
+                cmds += key + '\n'
+            await client.send_message(message.channel, cmds)
         else:
             await client.send_message(message.channel, "Sorry, I don't recognize that command")
 
