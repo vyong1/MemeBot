@@ -29,6 +29,8 @@ map = {
 }
 
 def thiccify(s):
+    s = s.lower()
+    s_new = ""
     for c in s:
         if c in map:
             s_new += map[c.lower()]
